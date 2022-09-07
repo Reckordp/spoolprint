@@ -1,9 +1,9 @@
-require File.expand_path('../spoolprint/version', __FILE__)
+require File.expand_path('../lib/spoolprint/version', __FILE__)
 
 Gem::Specification.new do |s|
   s.name = "spoolprint"
   s.version = Spoolprint::VERSION
-  s.license = ["MIT"]
+  s.license = "MIT"
   s.authors = ["Reckordp"]
   s.summary = "Library for printing to Esc/Eps printer"
   s.description = "Ruby/Spoolprint provides way to connecting printer on Windows"
