@@ -52,7 +52,7 @@ VALUE spoolprint_init(int argc, VALUE* argv, VALUE self) {
 	VALUE namaDoc;
 	sp_ket ket;
 	char* nama = "\0";
-	size_t tempuh;
+	size_t tempuh = 0;
 	MUAT_DATA(ket);
 
 	rb_scan_args(argc, argv, "01", &namaDoc);
@@ -61,7 +61,9 @@ VALUE spoolprint_init(int argc, VALUE* argv, VALUE self) {
 		nama = RSTRING_PTR(namaDoc);
 	}
 
-	while(*nama != 0) *ket->tumpuan++ = *nama++;
+	while(*nama != 0 && ++tempuh < NAMA_JOB_MAX) {
+		*ket->tumpuan++ = *nama++;
+	}
 	ket->panjangNamaJob = ket->tumpuan - ket->teks;
 	*ket->tumpuan++ = 0;
 }
