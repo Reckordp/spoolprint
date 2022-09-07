@@ -48,7 +48,7 @@ VALUE spoolprint_alloc(VALUE self) {
 	return TypedData_Wrap_Struct(self, &spoolprint_type, keterangan);
 }
 
-VALUE spoolprint_init(int argc, VALUE* argv, VALUE self) {
+VALUE spoolprintInit(int argc, VALUE* argv, VALUE self) {
 	VALUE namaDoc;
 	sp_ket ket;
 	char* nama = "\0";
@@ -68,7 +68,7 @@ VALUE spoolprint_init(int argc, VALUE* argv, VALUE self) {
 	*ket->tumpuan++ = 0;
 }
 
-VALUE spoolprint_cetak(VALUE self) {
+VALUE spoolprintCetak(VALUE self) {
 	char *nDoc = ASAL_NAMA_DOC, *dicetak;
 	size_t panjang;
 	sp_ket ket;
@@ -101,9 +101,10 @@ VALUE spoolprintRaw(VALUE self, VALUE raw) {
 }
 
 void Init_spoolprint() {
-	VALUE cSpoolPrint = rb_define_class("SpoolPrint", rb_cObject);
+	VALUE mSpoolprint = rb_define_module("Spoolprint");
+	VALUE cSpoolPrint = rb_define_class_under(mSpoolprint, "SpoolPrint", rb_cObject);
 	rb_define_alloc_func(cSpoolPrint, spoolprint_alloc);
-	rb_define_method(cSpoolPrint, "initialize", spoolprint_init, -1);
+	rb_define_method(cSpoolPrint, "initialize", spoolprintInit, -1);
 	rb_define_method(cSpoolPrint, "taruh_raw", spoolprintRaw, 1);
-	rb_define_method(cSpoolPrint, "cetak", spoolprint_cetak, 0);
+	rb_define_method(cSpoolPrint, "cetak", spoolprintCetak, 0);
 }
