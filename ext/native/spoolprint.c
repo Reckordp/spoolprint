@@ -2,12 +2,14 @@
 #include <stdlib.h>
 
 #define ASAL_NAMA_DOC "Resi Toko"
+#define PANJANG_TEKS 4096
+#define NAMA_JOB_MAX 255
 
 extern int spoolprint_dalam(char*, void*, size_t);
 
 typedef struct {
-	char teks[4096];
-	int panjangNamaDoc;
+	char teks[PANJANG_TEKS];
+	byte panjangNamaJob;
 	char* tumpuan;
 	void* sambungan;
 } spoolprint_keterangan, *sp_ket;
@@ -50,6 +52,7 @@ VALUE spoolprint_init(int argc, VALUE* argv, VALUE self) {
 	VALUE namaDoc;
 	sp_ket ket;
 	char* nama = "\0";
+	size_t tempuh;
 	MUAT_DATA(ket);
 
 	rb_scan_args(argc, argv, "01", &namaDoc);
@@ -59,7 +62,7 @@ VALUE spoolprint_init(int argc, VALUE* argv, VALUE self) {
 	}
 
 	while(*nama != 0) *ket->tumpuan++ = *nama++;
-	ket->panjangNamaDoc = ket->tumpuan - ket->teks;
+	ket->panjangNamaJob = ket->tumpuan - ket->teks;
 	*ket->tumpuan++ = 0;
 }
 
@@ -69,16 +72,15 @@ VALUE spoolprint_cetak(VALUE self) {
 	sp_ket ket;
 	MUAT_DATA(ket);
 
-	if (ket->panjangNamaDoc > 0) {
+	if (ket->panjangNamaJob > 0) {
 		nDoc = ket->teks;
-		dicetak = ket->teks + ket->panjangNamaDoc + 2;
+		dicetak = ket->teks + ket->panjangNamaJob + 2;
 	} else {
 		dicetak = ket->teks + 1;
 	}
 	
 	if (*dicetak != 0x1b || *(dicetak + 1) != 0x40) return Qnil;
 	panjang = ket->tumpuan - dicetak;
-	printf("%d %s\n", panjang, dicetak);
 	return INT2FIX(spoolprint_dalam(nDoc, dicetak, panjang));
 }
 

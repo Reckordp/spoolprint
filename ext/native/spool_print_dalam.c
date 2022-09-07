@@ -2,7 +2,7 @@
 #include <winspool.h>
 #include <stdio.h>
 
-int spoolprint_dalam(char* namaDoc, byte* resi, size_t panjang)
+int spoolprint_dalam(char* namaJob, byte* resi, size_t panjang)
 {
   CHAR namaPrinter[1024];
   DWORD ukuran;
@@ -16,7 +16,7 @@ int spoolprint_dalam(char* namaDoc, byte* resi, size_t panjang)
   DWORD tertulis;
 
   ZeroMemory(&docInfo, sizeof(docInfo));
-  docInfo.pDocName = namaDoc;
+  docInfo.pDocName = namaJob;
   docInfo.pDatatype = "RAW";
 
   OpenPrinter(namaPrinter, &kendali, NULL);
