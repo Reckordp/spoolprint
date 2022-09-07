@@ -3,7 +3,7 @@ require 'escpos'
 
 module Spoolprint
   class ReceiptPrintEasy < Escpos::Printer
-    def intialize(job = nil)
+    def initialize(job = nil)
       super
       @interface = create_interface(job)
     end
