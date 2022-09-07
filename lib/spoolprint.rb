@@ -3,9 +3,9 @@ require 'escpos'
 
 module Spoolprint
   class ReceiptPrintEasy < Escpos::Printer
-    def intialize(taskName = nil)
+    def intialize(job = nil)
       super
-      @interface = create_interface(taskName)
+      @interface = create_interface(job)
     end
 
     def to_escpos
@@ -14,11 +14,11 @@ module Spoolprint
     end
 
     private
-    def create_interface(taskName)
-      if (taskName.nil?)
+    def create_interface(job)
+      if (job.nil?)
         return SpoolPrint.new
       else
-        return SpoolPrint.new(taskName)
+        return SpoolPrint.new(job)
       end
     end
   end
