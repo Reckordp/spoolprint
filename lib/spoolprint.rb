@@ -1,4 +1,4 @@
-require 'spoolprint'
+require 'spoolprint.so'
 require 'escpos'
 
 module Spoolprint
