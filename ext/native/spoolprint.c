@@ -96,8 +96,12 @@ VALUE spoolprintRaw(VALUE self, VALUE raw) {
 	jukir = RSTRING_PTR(raw);
 	panjang = RSTRING_LEN(raw);
 
-	while (panjang--) *ket->tumpuan++ = *jukir++;
-	return Qnil;
+	if (ket->tumpuan - ket->teks + panjang < PANJANG_TEKS) {
+		while (panjang--) *ket->tumpuan++ = *jukir++;
+		return Qtrue;
+	} else {
+		return Qfalse;
+	}
 }
 
 void Init_spoolprint() {
