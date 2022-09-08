@@ -1,7 +1,7 @@
 require "spoolprint/server/receiver_manager"
 
 module Spoolprint
-  class ServerReceipt < SpoolPrint::Server
+  class ServerReceipt < Server
     ASAL_SERVER_PORT = 7776
 
     def initialize(spool)

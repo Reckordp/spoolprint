@@ -3,7 +3,7 @@
 #include <mswsock.h>
 #include <ruby.h>
 
-#define PANJANG_NAMA 1024;
+#define PANJANG_NAMA 1024
 // #define PANJANG_JUKIR_AWAL 2;
 
 typedef struct {
@@ -40,20 +40,22 @@ VALUE server_alloc(VALUE self) {
   char nama[PANJANG_NAMA];
   serv_ket keterangan;
   struct hostent* host;
+  struct in_addr* ipAddr;
 
   gethostname(nama, PANJANG_NAMA);
   host = gethostbyname(nama);
+  ipAddr = host->h_addr;
 
   keterangan = malloc(sizeof(server_ket));
   memset(keterangan, 0, sizeof(server_ket));
   keterangan->hantar = socket(AF_INET, SOCK_STREAM, 0);
   keterangan->addr.sin_family = AF_INET;
-  keterangan->addr.sin_addr.s_addr = host->h_addr->s_addr;
-  keterangan->jukir = malloc(sizeof(FD_SET) * PANJANG_JUKIR_AWAL);
-  keterangan->akhirSentuh = keterangan->jukir->fd_array;
+  keterangan->addr.sin_addr.s_addr = ipAddr->s_addr;
+  //keterangan->jukir = malloc(sizeof(FD_SET * PANJANG_JUKIR_AWAL);
+  keterangan->akhirSentuh = keterangan->jukir.fd_array;
   keterangan->bergulir = keterangan->akhirSentuh;
   // keterangan->panjang_pelanggan = PANJANG_JUKIR_AWAL;
-  return TypedData_Wrap_Struct(self, &spoolprint_type, keterangan);
+  return TypedData_Wrap_Struct(self, &server_type, keterangan);
 }
 
 #define MUAT_DATA(var) TypedData_Get_Struct(self, server_ket, \
@@ -78,7 +80,7 @@ VALUE server_recvpoll(VALUE self) {
   struct timeval tm;
   SOCKET pelangganFd;
   byte flag;
-  int sisa;
+  int sisa, panjang;
   FD_SET siap_dibaca;
 
   MUAT_DATA(ket);
@@ -86,15 +88,17 @@ VALUE server_recvpoll(VALUE self) {
 
   memcpy(&siap_dibaca, &ket->jukir, sizeof(FD_SET));
   timerclear(&tm);
-  sisa = select(siap_dibaca.fd_count, &siap_dibaca.fd_array, NULL, NULL, &tm);
+  sisa = select(siap_dibaca.fd_count, &siap_dibaca, NULL, NULL, &tm);
   for (size_t i = 0; i < sisa; i++) {
-    ket->bergulir = siap_dibaca.fd_array[i];
-    read(ket->bergulir, &flag, 1);
+    ket->bergulir = siap_dibaca.fd_array + i;
+    pelangganFd = *ket->bergulir;
+    read(pelangganFd, &flag, 1);
     if (flag != 0x9f) {
-      resp = rb_yield(rb_str_new2(flag));
-      write(ket->bergulir, RSTRING_PTR(resp), RSTRING_LEN(resp));
+      sisa = 0;
+      resp = rb_yield(rb_str_new_frozen(rb_str_new2((char*)&flag)));
+      write(pelangganFd, RSTRING_PTR(resp), RSTRING_LEN(resp));
     } else {
-      closesocket(ket->bergulir);
+      closesocket(pelangganFd);
       *ket->bergulir = *ket->akhirSentuh;
       ket->akhirSentuh--;
       ket->jukir.fd_count--;
@@ -102,7 +106,8 @@ VALUE server_recvpoll(VALUE self) {
   }
 
   memset(&pelanggan, 0, sizeof(pelanggan));
-  pelangganFd = accept(ket->hantar, &pelanggan, sizeof(pelanggan));
+  panjang = sizeof(pelanggan);
+  pelangganFd = accept(ket->hantar, (struct sockaddr*)&pelanggan, &panjang);
   if (pelangganFd != -1) {
     ket->akhirSentuh++;
     *ket->akhirSentuh = pelangganFd;
