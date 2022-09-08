@@ -38,8 +38,8 @@ static const rb_data_type_t spoolprint_type = {
 	.flags = RUBY_TYPED_FREE_IMMEDIATELY,
 };
 
-#define MUAT_DATA(var) TypedData_Get_Struct(self, \
-	spoolprint_keterangan, &spoolprint_type, var)
+#define MUAT_DATA(var) TypedData_Get_Struct(self, spoolprint_keterangan, \
+	&spoolprint_type, var)
 
 VALUE spoolprint_alloc(VALUE self) {
 	sp_ket keterangan = malloc(sizeof(spoolprint_keterangan));
@@ -104,6 +104,8 @@ VALUE spoolprintRaw(VALUE self, VALUE raw) {
 	}
 }
 
+extern void Init_server(VALUE);
+
 void Init_spoolprint() {
 	VALUE mSpoolprint = rb_define_module("Spoolprint");
 	VALUE cSpoolPrint = rb_define_class_under(mSpoolprint, "SpoolPrint", rb_cObject);
@@ -111,4 +113,5 @@ void Init_spoolprint() {
 	rb_define_method(cSpoolPrint, "initialize", spoolprintInit, -1);
 	rb_define_method(cSpoolPrint, "taruh_raw", spoolprintRaw, 1);
 	rb_define_method(cSpoolPrint, "cetak", spoolprintCetak, 0);
+	Init_server(mSpoolprint);
 }
