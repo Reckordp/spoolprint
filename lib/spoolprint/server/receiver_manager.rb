@@ -47,6 +47,7 @@ module Spoolprint
       resp = Response.new
       resp.success = FLAG_SUCCESS
       resp.for_print = req.message
+      return resp
     end
   end
 end
