@@ -17,6 +17,10 @@ typedef struct {
 
 void server_free(void* keterangan) {
   serv_ket serv = keterangan;
+  while(serv->akhirSentuh != serv->jukir.fd_array) {
+    closesocket(*serv->akhirSentuh--);
+  }
+  FD_ZERO(&serv->jukir);
 	closesocket(serv->hantar);
   free(serv);
 }
