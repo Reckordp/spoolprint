@@ -115,11 +115,27 @@ VALUE server_recvpoll(VALUE self) {
   }
 }
 
+VALUE server_readdriver(VALUE self, VALUE panjang) {
+  serv_ket ket;
+  MUAT_DATA(ket);
+  char* pandang;
+  int panj, panjDap;
+  VALUE dapat;
+
+  panj = FIX2INT(panjang);
+  pandang = malloc(panj);
+  panjDap = read(ket->bergulir, pandang, panj);
+  dapat = rb_str_new(pandang, panjDap);
+  free(pandang);
+  return dapat;
+}
+
 void Init_server(VALUE wrap) {
   VALUE cServer = rb_define_class_under(wrap, "Server", rb_cObject);
   rb_define_alloc_func(cServer, server_alloc);
   rb_define_method(cServer, "initialize", server_init, 1);
   rb_define_method(cServer, "receiver_poll", server_recvpoll, 0);
+  rb_define_method(cServer, "read_driver", server_readdriver, 0);
   // atexit(Finalize_server);
 }
 

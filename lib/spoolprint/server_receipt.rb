@@ -7,7 +7,7 @@ module Spoolprint
     def initialize(spool)
       super(ASAL_SERVER_PORT)
       @spool = spool
-      @manager = ReceiverManager.new
+      @manager = ReceiverManager.new(method(:read_driver))
       @server_zone = Thread.new { server_bergulir }
     end
 
