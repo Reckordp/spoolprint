@@ -24,7 +24,7 @@ module Spoolprint
     private
     def server_bergulir
       while true
-        @bergulir ? server_receive : Thread.stop?
+        @bergulir ? server_receive : Thread.stop
       end
     end
     
