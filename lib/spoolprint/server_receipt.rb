@@ -9,21 +9,23 @@ module Spoolprint
       @spool = spool
       @manager = ReceiverManager.new(method(:read_driver))
       @server_zone = Thread.new { server_bergulir }
+      @bergulir = false
     end
 
     def start
-      super
-      @server_zone.start
+      @bergulir = true
+      @server_zone.run if @server_zone.stop?
     end
 
     def stop
-      super
-      @server_zone.stop
+      @bergulir = false
     end
 
     private
     def server_bergulir
-      server_receive while true
+      while true
+        @bergulir ? server_receive : Thread.stop?
+      end
     end
     
     def server_receive
