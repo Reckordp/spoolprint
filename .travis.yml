@@ -10,4 +10,4 @@ deploy:
     tags: true
 
 env:
-  TOKEN_GENERAL: "${{ secrets.SPOOLER_TOKEN }}"
+  TOKEN_GENERAL: "${ secrets.SPOOLER_TOKEN }"
