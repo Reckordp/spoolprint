@@ -1,0 +1,8 @@
+language: ruby
+
+deploy:
+  provider: releases
+  api_key: ${{ secrets.GITHUB_TOKEN }}
+  skip_cleanup: true
+  on:
+    tags: true

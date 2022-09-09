@@ -20,7 +20,7 @@ jobs:
 
     - name: Publish to RubyGems
       run: |
-        latest=$(git describe)
+        latest=$(git describe --tags)
         echo checking out ${latest}
         git checkout ${latest}
         mkdir -p $HOME/.gem
