@@ -3,11 +3,8 @@ language: ruby
 script: rake halo
 deploy:
   provider: releases
-  github_token: $TOKEN_GENERAL
+  token: ${token}
   file: "in.dist"
   skip_cleanup: true
   on:
     tags: true
-
-env:
-  TOKEN_GENERAL: "${{secrets.SPOOLER_TOKEN}}"
