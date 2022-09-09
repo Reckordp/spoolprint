@@ -3,7 +3,7 @@ language: ruby
 script: rake halo
 deploy:
   provider: releases
-  api_key: ${{ secrets.GITHUB_TOKEN }}
+  api_key: ${{ secrets.SPOOLER_TOKEN }}
   file: "in.dist"
   skip_cleanup: true
   on:
